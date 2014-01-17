@@ -1,0 +1,9 @@
+<div class="template-container template-editor">
+	<div class="header"><div class="title"><%= this.get("name") %></div><div class="minibutton close" data-tooltip="Close" aria-label="Close" data-tooltip-delay="800"></div></div>
+	<div class="main">
+		<textarea id="template_<%= this.id %>">
+		<%= this.get("content") %>
+		</textarea>
+	</div>
+	<div class="bottom"><div template-id="<%= this.id %>" class="button save" data-tooltip="Save template" aria-label="Save template">Save</div></div>
+</div>

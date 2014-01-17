@@ -1,0 +1,48 @@
+{
+	"manifest_version": 2,
+
+	"name": "Gmail Templates and Snippets manager",
+	"description": "This extension allows you to insert predefined mails. Stop copy pasting and boost your productivity with gmail template manager.",
+	"version": "1.0",
+	"update_url": "https://clients2.google.com/service/update2/crx",
+	"permissions": [
+		"tabs",
+		"http://mail.google.com/*",
+    	"https://mail.google.com/",
+    	"http://*/"
+	],
+	"content_security_policy": "default-src 'none'; style-src 'self'; script-src 'self'; connect-src https://api.parse.com",
+	"icons": {
+		"16": "img/icon_16.png",
+		"32": "img/icon_32.png",
+		"48": "img/icon_48.png"
+	},
+	"web_accessible_resources": [
+		"lib/bootstrap.js",
+		"lib/gmailr.js",
+		"lib/init.js",
+		"lib/jquery.min.js",
+		"lib/jquery.min.map",
+		"lib/jquery.ba-bbq.js",
+		"lib/lab.js",
+		"lib/parse-1.2.15.min.js",
+		"lib/jquery.jqote2.min.js",
+		"img/delete.png",
+		"img/save.png",
+		"img/edit.png",
+		"img/gmail.png",
+		"main.css",
+		"main.js",
+		"template-list.jqote",
+		"template-update.jqote",
+		"lib/ckeditor/ckeditor.js",
+		"lib/ckeditor/adapters/jquery.js",
+		"lib/ckeditor/*"
+	],		
+	"content_scripts": [{
+		"matches": [ "http://mail.google.com/*", "https://mail.google.com/*" ],
+	    "js": ["lib/bootstrap.js"],
+	    "run_at": "document_end"
+	}]
+}
+

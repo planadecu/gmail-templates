@@ -52,11 +52,13 @@ Gmailr.init(function(G) {
     });
 
 	var templateTrigger = function(){
+
         $('.template-list').hide().remove();
         var popup = $($.jqote(jsTemplates.jqote_template_list,templates)).hide().appendTo(document.body);
         $(".minibutton.close",popup).click(function(){
            popup.hide();
         });
+
         var editTemplate = function(template,toAdd){
             $('.template-editor').hide().remove();
             var popupedit = $($.jqote(jsTemplates.jqote_template_update,template)).hide().appendTo(document.body);
@@ -81,6 +83,7 @@ Gmailr.init(function(G) {
                     });
 
                 }
+                Parse.Analytics.track('gtm_template_save', usage);
             });
             popupedit.center().show(200);
 
@@ -89,6 +92,7 @@ Gmailr.init(function(G) {
             var content = template.get("content");
             $(".gmail_default").html(content);
             popup.hide();
+            Parse.Analytics.track('gtm_template_insert', usage);
         }
         var deleteTemplate = function(template){
             if(confirm("Are you sure that you want to delete the template '"+template.get("name")+"'")){
@@ -96,7 +100,9 @@ Gmailr.init(function(G) {
                 if(template.id!="temp") template.save();
                 templates.remove(template);
                 templateTrigger();
+                Parse.Analytics.track('gtm_template_delete', usage);
             }
+            Parse.Analytics.track('gtm_template_show_delete', usage);
         }
         $(".button.new",popup).click(function(){
             var template = new Template();
@@ -106,6 +112,7 @@ Gmailr.init(function(G) {
             template.set("active",true);
 
             editTemplate(template,true);
+            Parse.Analytics.track('gtm_template_show_new', usage);
         });
         $(".template-item",popup).click(function(){
             insertTemplate(templates.get($(this).parent().attr("template-id")));
@@ -117,6 +124,7 @@ Gmailr.init(function(G) {
             deleteTemplate(templates.get($(this).parent().attr("template-id")));
         });
 	    popup.center().show(200);
+        Parse.Analytics.track('gtm_template_showlist', usage);
     };
 	setInterval(function(){
 		var send = G.sendButton().parent().parent();

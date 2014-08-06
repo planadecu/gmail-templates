@@ -12,6 +12,13 @@ Gmail Tempalte and snippets manager allows you to manage a list of predefined te
 
 A powerful templating engine is provided so you don't have to replace the fields inside the template manually. Popups are going to ask you what data do you want to insert.
 
+Supports gmail in several languages:
+- English
+- Spanish
+- French
+- Deutch
+- Catalan
+
 ===============
 
 Donate bitcoins to 1P6WR8KJeUmJZLPNXXyoKTEgMQvn3k8jd7 if you like.

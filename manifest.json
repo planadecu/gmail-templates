@@ -1,10 +1,12 @@
 {
 	"manifest_version": 2,
 
-	"name": "Gmail Templates and Snippets manager",
-	"description": "This extension allows you to insert predefined mails. Stop copy pasting and boost your productivity with gmail template manager.",
-	"version": "1.0",
+	"name": "Gmail Template and Snippet manager",
+	"short_name":"Manage your gmail templates easily. Bulk email sending."
+	"description": "Insert predefined mails: Create email templates and re-use them. Stop copy-pasting and boost your productivity with gmail template manager. Very good for auto-responding messages like availability for a vacational rental property or appointment management.",
+	"version": "1.1",
 	"update_url": "https://clients2.google.com/service/update2/crx",
+	"default_locale":"en",
 	"permissions": [
 		"tabs",
 		"http://mail.google.com/*",

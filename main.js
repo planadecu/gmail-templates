@@ -127,10 +127,10 @@ Gmailr.init(function(G) {
         Parse.Analytics.track('gtm_template_showlist', usage);
     };
 	setInterval(function(){
-		var send = G.sendButton().parent().parent();
-		if(send.parent().find("div[data-tooltip='Template']").length==0){
-			var template = send.clone();
-			template.insertAfter(send);
+		var sendTd = G.sendButton().parent().parent();
+		if(sendTd.parent().find("div[data-tooltip='Template']").length==0){
+			var template = sendTd.clone();
+			template.insertAfter(sendTd);
 			template.children().children().last().attr("data-tooltip","Template").html("T").css({"width":"20px","background-color":"red","background-image": "-webkit-linear-gradient(top,orangered,red)","border":"1px solid red","min-width":"0"}).click(templateTrigger);
 		}
 	},200);

@@ -51,7 +51,7 @@ Gmailr.init(function(G) {
         }
     });
 
-	var templateTrigger = function(){
+    var templateTrigger = function(){
 
         $('.template-list').hide().remove();
         var popup = $($.jqote(jsTemplates.jqote_template_list,templates)).hide().appendTo(document.body);
@@ -123,28 +123,28 @@ Gmailr.init(function(G) {
         $(".minibutton.delete",popup).click(function(){
             deleteTemplate(templates.get($(this).parent().attr("template-id")));
         });
-	    popup.center().show(200);
+        popup.center().show(200);
         Parse.Analytics.track('gtm_template_showlist', usage);
     };
-	setInterval(function(){
-		var send = G.sendButton().parent().parent();
-		if(send.parent().find("div[data-tooltip='Template']").length==0){
-			var template = send.clone();
-			template.insertAfter(send);
-			template.children().children().last().attr("data-tooltip","Template").html("T").css({"width":"20px","background-color":"red","background-image": "-webkit-linear-gradient(top,orangered,red)","border":"1px solid red","min-width":"0"}).click(templateTrigger);
-		}
-	},200);
+    setInterval(function(){
+        var send = G.sendButton().parent().parent();
+        if(send.parent().find("div[data-tooltip='Template']").length==0){
+            var template = send.clone();
+            template.insertAfter(send);
+            template.children().children().last().attr("data-tooltip","Template").html("T").css({"width":"20px","background-color":"red","background-image": "-webkit-linear-gradient(top,orangered,red)","border":"1px solid red","min-width":"0"}).click(templateTrigger);
+        }
+    },200);
  
     G.insertCss(getData('css_path'));
 
     var usage = {
-	  timestamp: "" + new Date().getTime(),
-	  email: G.emailAddress()
-	};
+      timestamp: "" + new Date().getTime(),
+      email: G.emailAddress()
+    };
 
-	Parse.Analytics.track('gtm_loaded', usage);
+    Parse.Analytics.track('gtm_loaded', usage);
 
-	console.log("## Gmail Template Manager: READY");
+    console.log("## Gmail Template Manager: READY");
 });
 
 

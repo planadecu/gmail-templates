@@ -1,18 +1,18 @@
-Gmail Templates and Snippet manager Chrome Extension
+GMail Templates and Snippet Manager Chrome Extension
 ====================================================
 
-GNUv2 Licence - 2013-2014, Jordi Planadecursach
+GNU GPLv2 Licence - 2013-2014, Jordi Planadecursach
 http://www.rourevell.com 
 
 ====================================================
 
-Tired of sending always the same type of mails. Tired of copy pasting mails from word, drive, dropbox and lose styles, layouts and colours?
+Tired of sending always the same type of email? Tired of copy pasting mails from Word, Drive, Dropbox and losing styles, layouts and colors?
 
-Gmail Tempalte and snippets manager allows you to manage a list of predefined templates and insert them directly to your "compose mail" view.
+GMail Template and Snippets Manager allows you to manage a list of predefined templates and insert them directly to your "compose mail" view.
 
 A powerful templating engine is provided so you don't have to replace the fields inside the template manually. Popups are going to ask you what data do you want to insert.
 
-Supports gmail in several languages:
+Supports GMail in several languages:
 - English
 - Spanish
 - French

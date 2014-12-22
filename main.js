@@ -1,6 +1,6 @@
 
 
-console.log("## Gmail Template Manager: LOADING");
+console.log("## Gmail Template Manager: LOADING...");
 
 Parse.initialize("jPRvej2uwOt81eNXBVrQjT1f5uK6oGSR5qOccspM", "C5cyoGmfyOY2kh06zRVJW7hLWhwsHsdOV5aJD9S7");
 
@@ -41,7 +41,7 @@ Gmailr.init(function(G) {
         success:function(templates){
             if(templates.length==0){
                 var template = new Template();
-                template.set("content","Dear #name#, This is a sample template.");
+                template.set("content","Dear ${1:text:Insert name},<br/><br/>The total amount of your invoice is USD ${3:number:Total budget} that you can pay via wire tranfer to the following bank account: ${2:text:Bank account number}<br/> <br/> The invoice will be done with name: ${1}<br/> <br/>Yours faithfully,<br/>${me}<br/>");
                 template.set("email",email);
                 template.set("name","Welcome template");
                 template.set("active",true);
@@ -90,6 +90,7 @@ Gmailr.init(function(G) {
         }
         var insertTemplate = function(template){
             var content = template.get("content");
+            content = enrich(content,email);
             $(".gmail_default").html(content);
             popup.hide();
             Parse.Analytics.track('gtm_template_insert', usage);
@@ -128,11 +129,14 @@ Gmailr.init(function(G) {
     };
     setInterval(function(){
         var sendTd = G.sendButton().parent().parent();
-        if(sendTd.parent().find("div[data-tooltip='Template']").length==0){
-            var template = sendTd.clone();
-            template.insertAfter(sendTd);
-            template.children().children().last().attr("data-tooltip","Template").html("T").css({"width":"20px","background-color":"red","background-image": "-webkit-linear-gradient(top,orangered,red)","border":"1px solid red","min-width":"0"}).click(templateTrigger);
-        }
+        sendTd.each(function(){
+            var sendTdEl = $(this);
+            if(sendTdEl.parent().find("div[data-tooltip='Template']").length==0){  
+                var template = sendTdEl.clone();
+                template.insertAfter(sendTdEl);
+                template.children().children().last().attr("data-tooltip","Template").html("T").css({"width":"20px","background-color":"red","background-image": "-webkit-linear-gradient(top,orangered,red)","border":"1px solid red","min-width":"0"}).click(templateTrigger);
+            }
+        });
     },200);
  
     G.insertCss(getData('css_path'));
@@ -153,4 +157,32 @@ jQuery.fn.center = function () {
     this.css("top", ( jQuery(window).height() - this.height() ) / 2+jQuery(window).scrollTop() + "px");
     this.css("left", ( jQuery(window).width() - this.width() ) / 2+jQuery(window).scrollLeft() + "px");
     return this;
+}
+
+var enrich = function(content,mail){
+  var r = /\${([^\$]*)}/g;
+  var tokens = [];
+  var match = r.exec(content);
+  while (match != null) {
+      tokens.push(match);
+      match = r.exec(content);
+  }
+  var ss = {
+    "me":{"val":mail}
+  };
+  for(i = 0; i < tokens.length; i++){
+    try{
+      var split = tokens[i][1].split(":");
+      if(ss[split[0]]==null) ss[split[0]] = {};
+      s = ss[split[0]];
+      if(s.val==null){
+         s.val = prompt(split[2]);
+      }
+      var val = s.val;
+      content = content.replace(tokens[i][0],val);
+    }catch(e){
+      console.err(e);
+    }
+  }
+  return content;
 }

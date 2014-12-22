@@ -51,8 +51,10 @@ Gmailr.init(function(G) {
         }
     });
 
-    var templateTrigger = function(){
-
+    var templateTrigger = function(button){
+        if(!button || button.jQuery==null){
+            button = $(this);
+        }
         $('.template-list').hide().remove();
         var popup = $($.jqote(jsTemplates.jqote_template_list,templates)).hide().appendTo(document.body);
         $(".minibutton.close",popup).click(function(){
@@ -78,7 +80,7 @@ Gmailr.init(function(G) {
                     }
                     template.save().then(function(){
                         if(toAdd) templates.add(template);
-                        templateTrigger();
+                        templateTrigger(button);
                         popupedit.hide();
                     });
 
@@ -88,10 +90,13 @@ Gmailr.init(function(G) {
             popupedit.center().show(200);
 
         }
-        var insertTemplate = function(template){
+        var insertTemplate = function(template,button){
             var content = template.get("content");
             content = enrich(content,email);
-            $(".gmail_default").html(content);
+            var el = button.parent();
+            while(el.length!=0 && el.find(".gmail_default").length==0) el = el.parent();
+            var mailBody = el.find(".gmail_default");
+            mailBody.html(mailBody.html()+content);
             popup.hide();
             Parse.Analytics.track('gtm_template_insert', usage);
         }
@@ -100,7 +105,7 @@ Gmailr.init(function(G) {
                 template.set("active",false);
                 if(template.id!="temp") template.save();
                 templates.remove(template);
-                templateTrigger();
+                templateTrigger(button);
                 Parse.Analytics.track('gtm_template_delete', usage);
             }
             Parse.Analytics.track('gtm_template_show_delete', usage);
@@ -116,7 +121,7 @@ Gmailr.init(function(G) {
             Parse.Analytics.track('gtm_template_show_new', usage);
         });
         $(".template-item",popup).click(function(){
-            insertTemplate(templates.get($(this).parent().attr("template-id")));
+            insertTemplate(templates.get($(this).parent().attr("template-id")),button);
         });
         $(".minibutton.update",popup).click(function(){
             editTemplate(templates.get($(this).parent().attr("template-id")));
@@ -128,8 +133,7 @@ Gmailr.init(function(G) {
         Parse.Analytics.track('gtm_template_showlist', usage);
     };
     setInterval(function(){
-        var sendTd = G.sendButton().parent().parent();
-        sendTd.each(function(){
+        G.sendButton().parent().parent().each(function(){
             var sendTdEl = $(this);
             if(sendTdEl.parent().find("div[data-tooltip='Template']").length==0){  
                 var template = sendTdEl.clone();

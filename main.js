@@ -51,7 +51,7 @@ Gmailr.init(function(G) {
         }
     });
 
-    var templateTrigger = function(button){
+    var templateButtonHandler = function(button){
         if(!button || button.jQuery==null){
             button = $(this);
         }
@@ -80,7 +80,7 @@ Gmailr.init(function(G) {
                     }
                     template.save().then(function(){
                         if(toAdd) templates.add(template);
-                        templateTrigger(button);
+                        templateButtonHandler(button);
                         popupedit.hide();
                     });
 
@@ -90,13 +90,10 @@ Gmailr.init(function(G) {
             popupedit.center().show(200);
 
         }
-        var insertTemplate = function(template,button){
+        var insertTemplate = function(template, button){
             var content = template.get("content");
-            content = enrich(content,email);
-            var el = button.parent();
-            while(el.length!=0 && el.find(".gmail_default").length==0) el = el.parent();
-            var mailBody = el.find(".gmail_default");
-            mailBody.html(mailBody.html()+content);
+            var enrichedContent = enrich(content, email);
+            pasteHtmlAtCaret(button, enrichedContent);
             popup.hide();
             Parse.Analytics.track('gtm_template_insert', usage);
         }
@@ -105,7 +102,7 @@ Gmailr.init(function(G) {
                 template.set("active",false);
                 if(template.id!="temp") template.save();
                 templates.remove(template);
-                templateTrigger(button);
+                templateButtonHandler(button);
                 Parse.Analytics.track('gtm_template_delete', usage);
             }
             Parse.Analytics.track('gtm_template_show_delete', usage);
@@ -134,11 +131,11 @@ Gmailr.init(function(G) {
     };
     setInterval(function(){
         G.sendButton().parent().parent().each(function(){
-            var sendTdEl = $(this);
-            if(sendTdEl.parent().find("div[data-tooltip='Template']").length==0){  
-                var template = sendTdEl.clone();
-                template.insertAfter(sendTdEl);
-                template.children().children().last().attr("data-tooltip","Template").html("T").css({"width":"20px","background-color":"red","background-image": "-webkit-linear-gradient(top,orangered,red)","border":"1px solid red","min-width":"0"}).click(templateTrigger);
+            var sendTd = $(this);
+            if(sendTd.parent().find("div[data-tooltip='Template']").length == 0) {
+                var templateTd = sendTd.clone();
+                templateTd.insertAfter(sendTd);
+                templateTd.children().children().last().attr("data-tooltip","Template").html("T").css({"width":"20px","background-color":"red","background-image": "-webkit-linear-gradient(top,orangered,red)","border":"1px solid red","min-width":"0"}).click(templateButtonHandler);
             }
         });
     },200);
@@ -156,14 +153,14 @@ Gmailr.init(function(G) {
 });
 
 
-jQuery.fn.center = function () {
+jQuery.fn.center = function() {
     this.css("position","absolute");
     this.css("top", ( jQuery(window).height() - this.height() ) / 2+jQuery(window).scrollTop() + "px");
     this.css("left", ( jQuery(window).width() - this.width() ) / 2+jQuery(window).scrollLeft() + "px");
     return this;
-}
+};
 
-var enrich = function(content,mail){
+var enrich = function(content,mail) {
   var r = /\${([^\$]*)}/g;
   var tokens = [];
   var match = r.exec(content);
@@ -189,4 +186,64 @@ var enrich = function(content,mail){
     }
   }
   return content;
-}
+};
+
+var pasteHtmlAtCaret = function(button, html) {
+  // Find the editor window
+  var el = button.parent();
+  while(el.length != 0 && el.find('div[g_editable="true"]').length == 0) {
+    el = el.parent();
+  }
+  var mailBody = el.find('div[g_editable="true"]');
+
+  // See if the cursor was last in the current compose window
+  var isCursorInCompose = lastRange && $(lastRange.commonAncestorContainer).closest(mailBody).length > 0;
+  if (!isCursorInCompose) {
+    if (Gmailr.debug) {
+      console.log('Cursor was not in compose window. Prepending template');
+    }
+    mailBody.html(html + mailBody.html());
+    lastRange = null;
+    return;
+  }
+
+  // http://stackoverflow.com/questions/6690752/insert-html-at-caret-in-a-contenteditable-div
+  if (Gmailr.debug) {
+    console.log('Replacing selected text or inserting template at cursor location');
+  }
+  lastRange.deleteContents();
+
+  var el = document.createElement("div");
+  el.innerHTML = html;
+  var frag = document.createDocumentFragment()
+  var node, lastNode;
+  while (node = el.firstChild) {
+    lastNode = frag.appendChild(node);
+  }
+  lastRange.insertNode(frag);
+
+  // Preserve the selection
+  if (lastNode) {
+    lastRange.setStartAfter(lastNode);
+    lastRange.collapse(true);
+    var selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(lastRange);
+  }
+};
+
+// Track the last place clicked in a compose window so that we can later
+// insert the template at that location
+var lastRange = null;
+document.onselectionchange = function() {
+  var selection = window.getSelection();
+  if (selection.rangeCount == 0) {
+    return;
+  }
+
+  var range = selection.getRangeAt(0).cloneRange();
+  var isCursorInCompose = $(range.commonAncestorContainer).closest('div[g_editable="true"]').length > 0
+  if (isCursorInCompose) {
+    lastRange = range;
+  }
+};

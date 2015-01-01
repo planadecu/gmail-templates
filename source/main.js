@@ -34,9 +34,12 @@ Gmailr.init(function(G) {
       model: Template
     });
     var templates = new Templates();
+    templates.comparator = function(object) {
+      return object.get("name").toLowerCase();
+    };
     var query = new Parse.Query(Template);
     query.equalTo("email", email).equalTo("active", true);
-    templates = query.collection();
+    templates.query = query;
     templates.fetch({
         success:function(templates){
             if(templates.length==0){
@@ -56,7 +59,7 @@ Gmailr.init(function(G) {
             button = $(this);
         }
         $('.template-list').hide().remove();
-        var popup = $($.jqote(jsTemplates.jqote_template_list,templates)).hide().appendTo(document.body);
+        var popup = $($.jqote(jsTemplates.jqote_template_list, templates)).hide().appendTo(document.body);
         $(".minibutton.close",popup).click(function(){
            popup.hide();
         });

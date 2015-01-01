@@ -38,13 +38,14 @@ Gmailr.init(function(G) {
     query.equalTo("email", email).equalTo("active", true);
     templates = query.collection();
     templates.fetch({
-        success:function(templates){
-            if(templates.length==0){
+        success: function(templates) {
+            if (templates.length == 0) {
                 var template = new Template();
-                template.set("content","Dear ${1:text:Insert name},<br/><br/>The total amount of your invoice is USD ${3:number:Total budget} that you can pay via wire tranfer to the following bank account: ${2:text:Bank account number}<br/> <br/> The invoice will be done with name: ${1}<br/> <br/>Yours faithfully,<br/>${me}<br/>");
-                template.set("email",email);
-                template.set("name","Welcome template");
-                template.set("active",true);
+                template.set("active", true);
+                template.set("email", email);
+                template.set("name", "Welcome template");
+                template.set("subject", "Invoice reminder");
+                template.set("content", "Dear ${1:text:Insert name},<br/><br/>The total amount of your invoice is USD ${3:number:Total budget} that you can pay via wire tranfer to the following bank account: ${2:text:Bank account number}<br/> <br/> The invoice will be done with name: ${1}<br/> <br/>Yours faithfully,<br/>${me}<br/>");
                 template.id = "temp";
                 templates.add(template);
             }
@@ -61,25 +62,28 @@ Gmailr.init(function(G) {
            popup.hide();
         });
 
-        var editTemplate = function(template,toAdd){
+        var editTemplate = function(template, toAdd) {
             $('.template-editor').hide().remove();
-            var popupedit = $($.jqote(jsTemplates.jqote_template_update,template)).hide().appendTo(document.body);
-            popupedit.find("textarea").ckeditor();
-            $(".minibutton.close",popupedit).click(function(){
+            var popupedit = $($.jqote(jsTemplates.jqote_template_update, template)).hide().appendTo(document.body);
+            popupedit.find(".template-content-editor").ckeditor();
+            $(".minibutton.close",popupedit).click(function() {
                 popupedit.hide();
             });
-            $(".button.save",popupedit).click(function(){
+            $(".button.save",popupedit).click(function() {
                 var name = template.get("name");
-                if(title=prompt("Select a name for the template.",name)){
-                    template.set("content",popupedit.find("textarea").val());
-                    template.set("name",title);
-                    if(template.id=="temp"){
+                if (title = prompt("Select a name for the template.", name)) {
+                    template.set("name", title);
+                    template.set("subject", popupedit.find("input").val());
+                    template.set("content", popupedit.find("textarea").val());
+                    if (template.id == "temp") {
                         templates.remove(template);
                         template.id = undefined;
                         toAdd = true;
                     }
-                    template.save().then(function(){
-                        if(toAdd) templates.add(template);
+                    template.save().then(function() {
+                        if(toAdd) {
+                          templates.add(template);
+                        }
                         templateButtonHandler(button);
                         popupedit.hide();
                     });
@@ -91,9 +95,31 @@ Gmailr.init(function(G) {
 
         }
         var insertTemplate = function(template, button){
-            var content = template.get("content");
-            var enrichedContent = enrich(content, email);
-            pasteHtmlAtCaret(button, enrichedContent);
+            // Find the subject box and insert the subject
+            var subject = template.get("subject");
+            if (subject) {
+              var subjectBox;
+              for (var el = button; el.length != 0 && (subjectBox = el.find('input[name="subjectbox"]')).length == 0; el = el.parent()) {}
+              if (subjectBox) {
+                if (!subjectBox.val()) {
+                  subjectBox.val(subject);
+                }
+              } else {
+                console.log("Could not find subject box");
+              }
+            }
+
+            // Find the editor window and insert the content
+            var mailBody;
+            for (var el = button; el.length != 0 && (mailBody = el.find('div[g_editable="true"]')).length == 0; el = el.parent()) {}
+            if (mailBody) {
+              var content = template.get("content");
+              var enrichedContent = enrich(content, email);
+              pasteHtmlAtCaret(mailBody, enrichedContent);
+            } else {
+              console.log("Could not find compose window");
+            }
+
             popup.hide();
             Parse.Analytics.track('gtm_template_insert', usage);
         }
@@ -107,13 +133,13 @@ Gmailr.init(function(G) {
             }
             Parse.Analytics.track('gtm_template_show_delete', usage);
         }
-        $(".button.new",popup).click(function(){
+        $(".button.new", popup).click(function(){
             var template = new Template();
-            template.set("content","Insert new content here");
-            template.set("email",email);
-            template.set("name","new template");
-            template.set("active",true);
-
+            template.set("active", true);
+            template.set("email", email);
+            template.set("name", "new template");
+            template.set("content", "Insert new content here");
+ 
             editTemplate(template,true);
             Parse.Analytics.track('gtm_template_show_new', usage);
         });
@@ -188,14 +214,7 @@ var enrich = function(content,mail) {
   return content;
 };
 
-var pasteHtmlAtCaret = function(button, html) {
-  // Find the editor window
-  var el = button.parent();
-  while(el.length != 0 && el.find('div[g_editable="true"]').length == 0) {
-    el = el.parent();
-  }
-  var mailBody = el.find('div[g_editable="true"]');
-
+var pasteHtmlAtCaret = function(mailBody, html) {
   // See if the cursor was last in the current compose window
   var isCursorInCompose = lastRange && $(lastRange.commonAncestorContainer).closest(mailBody).length > 0;
   if (!isCursorInCompose) {

@@ -1,9 +1,15 @@
 <div class="template-container template-editor">
-	<div class="header"><div class="title"><%= this.get("name") %></div><div class="minibutton close" data-tooltip="Close" aria-label="Close" data-tooltip-delay="800"></div></div>
-	<div class="main">
-		<textarea id="template_<%= this.id %>">
-		<%= this.get("content") %>
-		</textarea>
-	</div>
-	<div class="bottom"><div template-id="<%= this.id %>" class="button save" data-tooltip="Save template" aria-label="Save template">Save</div></div>
+  <div class="header">
+    <div class="title"><%= this.get("name") %></div>
+    <div class="minibutton close" data-tooltip="Close" aria-label="Close" data-tooltip-delay="800"></div>
+  </div>
+  <div class="main">
+    <div style="margin:10px">
+      <span style="font-weight:bold">Subject:</span> <input id="template_<%= this.id %>_subject" type="text" style="width:80%; margin-left:5px" value="<%= this.get("subject") || '' %>">
+    </div>
+    <textarea id="template_<%= this.id %>" class="template-content-editor">
+      <%= this.get("content") %>
+    </textarea>
+  </div>
+  <div class="bottom"><div template-id="<%= this.id %>" class="button save" data-tooltip="Save template" aria-label="Save template">Save</div></div>
 </div>

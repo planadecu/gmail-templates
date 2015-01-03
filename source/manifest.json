@@ -27,8 +27,6 @@
     "lib/lab.js",
     "lib/parse-1.3.3.min.js",
     "lib/jquery.jqote2.min.js",
-    "lib/openpgp.worker.js",
-    "lib/openpgp.js",
     "img/delete.png",
     "img/save.png",
     "img/edit.png",

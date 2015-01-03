@@ -6,46 +6,39 @@
   2) Injects the scripts necessary to load the Gmailr API into the Gmail script environment.
 */
 
-// Only run this script in the top-most frame (there are multiple frames in Gmail)
-if(top.document == document) {
-    
-    // Adds a data DOM element that simply holds a string in an attribute, to be read
-    // by the injected scripts.
-    var addData = function(id, val) {
-        var body = document.getElementsByTagName("body")[0];
-        var div = document.createElement('div');
-        div.setAttribute('data-val', val);
-        div.id = id + "_gmailr_data";
-        div.setAttribute('style', "display:none");
-        body.appendChild(div);
-    };
-    
-    // Loads a script
-    var loadScript = function(path) {
-        var headID = document.getElementsByTagName("head")[0];
-        var newScript = document.createElement('script');
-        newScript.type = 'text/javascript';
-        newScript.src = path;
-        headID.appendChild(newScript);
-    };
-    
-    // Pass data to inserted scripts via DOM elements
-    addData("css_path",         chrome.extension.getURL("main.css"));
-    addData("jquery_path",      chrome.extension.getURL("lib/jquery.min.js"));
-    addData("jquery_bbq_path",  chrome.extension.getURL("lib/jquery.ba-bbq.js"));
-    addData("jquery_jqote2",    chrome.extension.getURL("lib/jquery.jqote2.min.js"));
-    addData("gmailr_path",      chrome.extension.getURL("lib/gmailr.js"));
-    addData("parse_path",       chrome.extension.getURL("lib/parse-1.3.3.min.js"));
-    addData("ckeditor",       chrome.extension.getURL("lib/ckeditor/ckeditor.js"));
-    addData("ckeditor_jquery",       chrome.extension.getURL("lib/ckeditor/adapters/jquery.js"));
-    addData("main_path",        chrome.extension.getURL("main.js"));
-    addData("jqote_template_list",      chrome.extension.getURL("template-list.jqote"));
-    addData("jqote_template_update",    chrome.extension.getURL("template-update.jqote"));
-    addData("openpgp",    chrome.extension.getURL("openpgp.js"));
-    addData("openpgp_worker",    chrome.extension.getURL("openpgp.worker.js"));
-
-
-    // Load the initialization scripts
-    loadScript(chrome.extension.getURL("lib/lab.js"));
-    loadScript(chrome.extension.getURL("lib/init.js"));
+// Adds a data DOM element that simply holds a string in an attribute, to be read
+// by the injected scripts.
+var addData = function(id, val) {
+  var body = document.getElementsByTagName('body')[0];
+  var div = document.createElement('div');
+  div.setAttribute('data-val', val);
+  div.id = id + '_gmailr_data';
+  div.setAttribute('style', 'display:none');
+  body.appendChild(div);
 };
+    
+// Loads a script
+var loadScript = function(path) {
+  var headID = document.getElementsByTagName('head')[0];
+  var newScript = document.createElement('script');
+  newScript.type = 'text/javascript';
+  newScript.src = path;
+  headID.appendChild(newScript);
+};
+    
+// Pass data to inserted scripts via DOM elements
+addData('css_path',              chrome.extension.getURL('main.css'));
+addData('jquery_path',           chrome.extension.getURL('lib/jquery.min.js'));
+addData('jquery_bbq_path',       chrome.extension.getURL('lib/jquery.ba-bbq.js'));
+addData('jquery_jqote2',         chrome.extension.getURL('lib/jquery.jqote2.min.js'));
+addData('gmailr_path',           chrome.extension.getURL('lib/gmailr.js'));
+addData('parse_path',            chrome.extension.getURL('lib/parse-1.3.3.min.js'));
+addData('ckeditor',              chrome.extension.getURL('lib/ckeditor/ckeditor.js'));
+addData('ckeditor_jquery',       chrome.extension.getURL('lib/ckeditor/adapters/jquery.js'));
+addData('main_path',             chrome.extension.getURL('main.js'));
+addData('jqote_template_list',   chrome.extension.getURL('template-list.jqote'));
+addData('jqote_template_update', chrome.extension.getURL('template-update.jqote'));
+
+// Load the initialization scripts
+loadScript(chrome.extension.getURL('lib/lab.js'));
+loadScript(chrome.extension.getURL('lib/init.js'));

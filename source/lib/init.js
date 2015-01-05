@@ -25,8 +25,6 @@ $LAB
 .script(getData('jquery_bbq_path'))
 .script(getData('jquery_jqote2'))
 .script(getData('ckeditor_jquery'))
-.script(getData('openpgp'))
-.script(getData('openpgp_worker'))
 .wait()
 .script(getData('gmailr_path'))
 .wait()

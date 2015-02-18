@@ -27,7 +27,68 @@
         "de": {
             "inbox":"Posteingang",
             "send":"Senden"
+        },
+        "af": {
+            "inbox":"Inkassie",
+            "send":"Stuur"
+        },
+        "nl": {
+            "inbox":"Postvak IN",
+            "send":"Verzenden"
+        },
+        "it": {
+            "inbox":"Posta in arrivo",
+            "send":"Invia"
+        },
+        "pt": {
+            "inbox":"Caixa de entrada",
+            "send":"Enviar"
+        },
+        "pl": {
+            "inbox":"Odebrane",
+            "send":"Wyślij"
+        },
+        "ru": {
+            "inbox":"Входящие",
+            "send":"Отправить"
+        },
+        "sv": {
+            "inbox":"Inkorgen",
+            "send":"Skicka"
+        },
+        "ja": {
+            "inbox":"受信トレイ",
+            "send":"送信"
+        },
+        "ko": {
+            "inbox":"받은편지함",
+            "send":"보내기"
+        },
+        "zh-CN": {
+            "inbox":"收件箱",
+            "send":"发送"
+        },
+        "no": {
+            "inbox":"Innboks",
+            "send":"Send"
+        },
+        "dk": {
+            "inbox":"Indbakke",
+            "send":"Send"
+        },
+        "fi": {
+            "inbox":"Postilaatikko",
+            "send":"Lähetä"
+        },
+        "ar": {
+            "inbox":"البريد الوارد ‏",
+            "send":"إرسال"
+        },
+        "iw": {
+            "inbox":"דואר נכנס ‏",
+            "send":"שלח"
         }
+
     }
     // Utility methods
 

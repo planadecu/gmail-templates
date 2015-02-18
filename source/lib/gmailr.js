@@ -89,19 +89,20 @@
             "send":"שלח"
         }
 
-    }
+    };
     // Utility methods
 
     var dbg = function(msg) {
-        if(Gmailr.debug)
+        if(Gmailr.debug){
             console.log(msg);
+		}
     };
 
     var p = function(els, m) {
         if(!els) {
             dbg(els);
         } else if(els.each) {
-            if(els.length == 0) {
+            if(els.length === 0) {
                 dbg('p: Empty');
             } else {
                 els.each(function(i,e) {
@@ -160,11 +161,12 @@
                 self.elements.canvas = (canvas_frame = document.getElementById("canvas_frame")) ?
                     $(canvas_frame.contentDocument) : $(document);
                 self.elements.body   = self.elements.canvas.find('body').first();
-                var mailLoaded = self.loaded && self.__emailAddress().indexOf("@")!=-1;
+                var mailLoaded = self.loaded && self.__emailAddress().indexOf("@")!==-1;
                 if(mailLoaded) {
-                    if(delayed_loader_count != 0)
+                    if(delayed_loader_count !== 0){
                         dbg('Delayed loader success, email: ' + self.emailAddress() );
-
+					}
+					
                     self.elements.canvas.bind("DOMSubtreeModified", function(e) {
                         self.detectDOMEvents(e);
                     });

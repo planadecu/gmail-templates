@@ -17,15 +17,26 @@ var getData = function(id) {
 };
 
 // Load all dependencies and run main.js
-$LAB
-.script(getData('parse_path'))
-.script(getData('jquery_path'))
-.script(getData('ckeditor'))
-.wait()
-.script(getData('jquery_bbq_path'))
-.script(getData('jquery_jqote2'))
-.script(getData('ckeditor_jquery'))
-.wait()
-.script(getData('gmailr_path'))
-.wait()
-.script(getData('main_path'));
+var wait = 10;
+var boot = function(){
+	if(typeof $LAB != "undefined"){
+		$LAB
+		.script(getData('parse_path'))
+		.script(getData('jquery_path'))
+		.script(getData('ckeditor'))
+		.wait()
+		.script(getData('jquery_bbq_path'))
+		.script(getData('jquery_jqote2'))
+		.script(getData('ckeditor_jquery'))
+		.wait()
+		.script(getData('gmailr_path'))
+		.wait()
+		.script(getData('main_path'));
+	}else{
+		console.log("## Gmail Template Manager: Waiting $LAB to load " + wait + " ms");
+		setTimeout(boot,wait);
+		wait *= 2;
+	}
+};
+
+boot();

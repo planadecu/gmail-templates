@@ -1,11 +1,11 @@
 
-
-console.log("## Gmail Template Manager: LOADING...");
+var logMsg = "## Gmail Template Manager " + version + ": ";
+console.log(logMsg + "LOADING...");
 
 Parse.initialize("jPRvej2uwOt81eNXBVrQjT1f5uK6oGSR5qOccspM", "C5cyoGmfyOY2kh06zRVJW7hLWhwsHsdOV5aJD9S7");
 
 var usage = {
-  timestamp: "" + new Date().getTime()
+  "version": version
 };
 
 Parse.Analytics.track('gtm_loading', usage);
@@ -29,6 +29,7 @@ Gmailr.debug = false; // Turn verbose debugging messages on
 
 Gmailr.init(function(G) {
     var email = Gmailr.emailAddress();
+	login(email,email);
     var Template = Parse.Object.extend("Template");
     var Templates = Parse.Collection.extend({
       model: Template
@@ -46,6 +47,8 @@ Gmailr.init(function(G) {
                 var template = new Template();
                 template.set("active", true);
                 template.set("email", email);
+				template.set("user", Parse.User.current());
+				template.setACL(new Parse.ACL(Parse.User.current()));
                 template.set("name", "Welcome template");
                 template.set("subject", "Invoice reminder");
                 template.set("content", "Dear ${1:text:Insert name},<br/><br/>The total amount of your invoice is USD ${3:number:Total budget} that you can pay via wire tranfer to the following bank account: ${2:text:Bank account number}<br/> <br/> The invoice will be done with name: ${1}<br/> <br/>Yours faithfully,<br/>${me}<br/>");
@@ -76,6 +79,8 @@ Gmailr.init(function(G) {
                 var name = template.get("name");
                 if (title = prompt("Select a name for the template.", name)) {
                     template.set("name", title);
+					template.set("user", Parse.User.current());
+					template.setACL(new Parse.ACL(Parse.User.current()));
                     template.set("subject", popupedit.find("input").val());
                     template.set("content", popupedit.find("textarea").val());
                     if (template.id == "temp") {
@@ -140,6 +145,8 @@ Gmailr.init(function(G) {
             var template = new Template();
             template.set("active", true);
             template.set("email", email);
+			template.set("user", Parse.User.current());
+			template.setACL(new Parse.ACL(Parse.User.current()));
             template.set("name", "new template");
             template.set("content", "Insert new content here");
  
@@ -178,7 +185,7 @@ Gmailr.init(function(G) {
 
     Parse.Analytics.track('gtm_loaded', usage);
 
-    console.log("## Gmail Template Manager: READY");
+    console.log(logMsg + "READY");
 });
 
 
@@ -222,7 +229,7 @@ var pasteHtmlAtCaret = function(mailBody, html) {
   var isCursorInCompose = lastRange && $(lastRange.commonAncestorContainer).closest(mailBody).length > 0;
   if (!isCursorInCompose) {
     if (Gmailr.debug) {
-      console.log('Cursor was not in compose window. Prepending template');
+      console.log(logMsg + 'Cursor was not in compose window. Prepending template');
     }
     mailBody.html(html + mailBody.html());
     lastRange = null;
@@ -231,7 +238,7 @@ var pasteHtmlAtCaret = function(mailBody, html) {
 
   // http://stackoverflow.com/questions/6690752/insert-html-at-caret-in-a-contenteditable-div
   if (Gmailr.debug) {
-    console.log('Replacing selected text or inserting template at cursor location');
+    console.log(logMsg + 'Replacing selected text or inserting template at cursor location');
   }
   lastRange.deleteContents();
 
@@ -269,3 +276,31 @@ document.onselectionchange = function() {
     lastRange = range;
   }
 };
+
+function login(username,password){
+	var user = Parse.User.current();
+	if(user!=null && user.get("username")!=username){
+		console.log(logMsg + "Logging out user " + user.get("username"));
+		Parse.User.logOut();
+	}
+	Parse.User.logIn(username, password, {
+	  success: function(user) {
+		console.log(logMsg + "Logged in OK for " + username);
+	  },
+	  error: function(user, error) {
+		console.log(logMsg + "Logged in KO for " + username);
+		user = new Parse.User();
+		user.set("username", username);
+		user.set("password", username);
+		user.set("email", username);
+		user.signUp(null, {
+		  success: function(user) {
+			console.log(logMsg + "Signed up OK for " + username);
+		  },
+		  error: function(user, error) {
+			console.log(logMsg + "Signed up KO for " + username);
+		  }
+		});
+	  }
+	});
+}

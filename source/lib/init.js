@@ -16,6 +16,8 @@ var getData = function(id) {
     return document.getElementById(id + "_gmailr_data").getAttribute('data-val');
 };
 
+var version = getData('extension_version');
+
 // Load all dependencies and run main.js
 var wait = 10;
 var boot = function(){

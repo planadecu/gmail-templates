@@ -41,7 +41,23 @@ Supports GMail in several languages:
 * Spanish
 * French
 * German
+* Polish
+* Portuguese
+* Dutch
+* Danish
+* Norwegian
+* Swedish
+* Danish
+* Korean
+* Chinese
+* Japanese
+* Arab
 * Catalan
+* Hebrew
+
+### Version
+
+Current version: 1.3.0
 
 ### License
 The software is free to use and integrate in other platforms. 

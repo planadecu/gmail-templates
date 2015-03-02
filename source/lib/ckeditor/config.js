@@ -12,23 +12,19 @@ CKEDITOR.editorConfig = function( config ) {
 	config.toolbarGroups = [
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
 		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
-		{ name: 'links' },
-		{ name: 'insert' },
-		{ name: 'forms' },
-		{ name: 'tools' },
-		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
+		{ name: 'linksinsert', groups: [ 'links', 'insert' ] },
+		{ name: 'document',	   groups: [ 'document', 'doctools' ] },
 		{ name: 'others' },
-		'/',
-		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+		{ name: 'basicstyles', groups: [ 'basicstyles', 'cleanup', 'colors' ] },
 		{ name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ] },
 		{ name: 'styles' },
-		{ name: 'colors' },
-		{ name: 'about' }
+		{ name: 'tools' },
+		{ name: 'modeforms' , groups: [ 'mode', 'forms' ]}
 	];
 
 	// Remove some buttons provided by the standard plugins, which are
 	// not needed in the Standard(s) toolbar.
-	config.removeButtons = 'Underline,Subscript,Superscript';
+	config.removeButtons = 'Subscript,Superscript';
 
 	// Set the most common block elements.
 	config.format_tags = 'p;h1;h2;h3;pre';
@@ -38,4 +34,7 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// GMail separates paragraphs by divs
 	config.enterMode = CKEDITOR.ENTER_DIV;
+
+	// Remove magic line plugin
+	config.removePlugins = 'magicline';
 };

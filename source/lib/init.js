@@ -9,11 +9,11 @@
     
     If you want to add more files, or change how files are loaded, simply extend the load 
     paths after the LAB call to getData('gmailr_path'). 
- */
+    */
 
 // Grabs the data that is injected using addData in bootstrap.js
 var getData = function(id) {
-    return document.getElementById(id + "_gmailr_data").getAttribute('data-val');
+	return document.getElementById(id + "_gmailr_data").getAttribute('data-val');
 };
 
 var version = getData('extension_version');

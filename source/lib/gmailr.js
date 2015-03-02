@@ -5,7 +5,7 @@
  * Copyright 2011, James Yu, Jordi Planadecursach
  */
 
-(function($, window) {
+ (function($, window) {
 
     locale = {
         "en": {
@@ -95,7 +95,7 @@
     var dbg = function(msg) {
         if(Gmailr.debug){
             console.log(msg);
-		}
+        }
     };
 
     var p = function(els, m) {
@@ -129,13 +129,13 @@
          * Public Methods and Variables
          */
 
-        debug: false,
-        inboxLink: null,
-        priorityInboxLink: null,
-        currentNumUnread: null,
-        currentInboxCount: null,
-        archived: [],
-        elements: {},
+         debug: false,
+         inboxLink: null,
+         priorityInboxLink: null,
+         currentNumUnread: null,
+         currentInboxCount: null,
+         archived: [],
+         elements: {},
 
         /*
             This is the main initialization routine. It bootstraps Gmailr into the Gmail interface.
@@ -144,29 +144,29 @@
             Gmailr.init(funciton(G) {
                 // .. G is the Gmailr API object
             });
-        */
+*/
 
-        init: function(cb) {
-            var self = this;
+init: function(cb) {
+    var self = this;
 
-            dbg('Initializing Gmailr API');
-            
+    dbg('Initializing Gmailr API');
 
-            var delayed_loader_count = 0;
+
+    var delayed_loader_count = 0;
 
             // Here we do delayed loading until success. This is in the case
             // that our script loads after Gmail has already loaded.
             self.delayed_loader = setInterval(function() {
                 var canvas_frame;
                 self.elements.canvas = (canvas_frame = document.getElementById("canvas_frame")) ?
-                    $(canvas_frame.contentDocument) : $(document);
+                $(canvas_frame.contentDocument) : $(document);
                 self.elements.body   = self.elements.canvas.find('body').first();
-                var mailLoaded = self.loaded && self.__emailAddress().indexOf("@")!==-1;
+                var mailLoaded = self.loaded && self.emailAddress().indexOf("@")!==-1;
                 if(mailLoaded) {
                     if(delayed_loader_count !== 0){
                         dbg('Delayed loader success, email: ' + self.emailAddress() );
-					}
-					
+                    }
+
                     self.elements.canvas.bind("DOMSubtreeModified", function(e) {
                         self.detectDOMEvents(e);
                     });
@@ -178,36 +178,36 @@
                     self.bootstrap(self.elements.body, cb);
                 }
             }, 500);
-        },
+},
 
         /*
             Inserts the element to the top of the Gmail interface.
-        */
+            */
 
-        insertTop: function(el) {
-            if(!this.loaded) throw "Call to insertTop before Gmail has loaded";
-            this.elements.body.prepend($(el));
-        },
+            insertTop: function(el) {
+                if(!this.loaded) throw "Call to insertTop before Gmail has loaded";
+                this.elements.body.prepend($(el));
+            },
 
         /*
             Allows you to apply jQuery selectors in the Gmail DOM, like so:
 
             G.$('.my_class');
-        */
+            */
 
-        $: function(selector) {
-            return this.elements.body.find(selector);
-        },
+            $: function(selector) {
+                return this.elements.body.find(selector);
+            },
 
         /*
             Inserts a CSS file into the Gmail DOM.
-        */
+            */
 
-        insertCss: function(cssFile) {
-            var css = $('<link rel="stylesheet" type="text/css">');
-            css.attr('href', cssFile);
-            this.elements.canvas.find('head').first().append(css);
-        },
+            insertCss: function(cssFile) {
+                var css = $('<link rel="stylesheet" type="text/css">');
+                css.attr('href', cssFile);
+                this.elements.canvas.find('head').first().append(css);
+            },
 
         /**
          * Subscribe to a specific event in Gmail
@@ -220,14 +220,14 @@
          *   'viewChanged'
          *   'applyLabel'
          */
-        observe: function(type, cb) {
+         observe: function(type, cb) {
             this.ob_queues[type].push(cb);
         },
 
         /**
          * Number of unread messages.
          */
-        numUnread: function() {
+         numUnread: function() {
             if(!this.loaded) throw "Call to numUnread before Gmail has loaded";
 
             // We always look to the inbox link, bc it always displays the number unread
@@ -242,29 +242,41 @@
         /**
          * Email address of the Gmail account.
          */
-        emailAddress: function() {
+         emailAddress: function() {
             if(!this.loaded) throw "Call to emailAddress before Gmail has loaded";
 
-            var mail = this.__emailAddress();
-            if(!mail || mail.length) mail = mail.substring(0,mail.length-1);
-            return mail;
-        },
-
-        __emailAddress: function(){
-            // add selectors here if/when gmail changes this
             var emailSelectors = ['#guser b', '.gbmp1', ".gbps2"]
 
             var mail = this.elements.canvas.find(emailSelectors.join(',')).first().html();
             if(!mail || mail.length){
                 split = this.elements.canvas.find(".cmsg .msg").html().trim().split(" ");
-                mail = split[split.length-1];
+                mail = null;
+                for(var i = 0; i < split.length && !mail; i++){
+                    var spliz = split[i].replace("...","");
+                    if(this.__validateEmail(spliz)){
+                        mail = spliz;
+                    }
+                }
             }
+
             return mail;
         },
 
+        __validateEmail: function(mail){
+            return /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*$/.test(mail);
+        },
+
         /**
-         * Returns whether the current view is a threaded or conversation view.
-         */
+        * Language of gmail
+        */
+        language: function() {
+            return this.lang;
+        },
+
+
+        /**
+        * Returns whether the current view is a threaded or conversation view.
+        */
         currentView: function() {
             if(!this.loaded) throw "Call to currentView before Gmail has loaded";
 
@@ -276,15 +288,15 @@
         },
 
         /*****************************************************************************************
-         * Private Methods
-         */
+        * Private Methods
+        */
 
 
         /**
-         * This method attempts to bootstrap Gmailr into the Gmail interface.
-         * Basically, this amounts polling to make sure Gmail has fully loaded,
-         * and then setting up some basic hooks.
-         */
+        * This method attempts to bootstrap Gmailr into the Gmail interface.
+        * Basically, this amounts polling to make sure Gmail has fully loaded,
+        * and then setting up some basic hooks.
+        */
 
         bootstrap: function(el, cb) {
             var self = this;
@@ -293,13 +305,14 @@
 
                 // get handle on the left menu
                 if(!this.leftMenu || this.leftMenu.length == 0) {
-//                  this.leftMenu = el.find('.no .nM .TK').first().closest('.nn');
+                    //                  this.leftMenu = el.find('.no .nM .TK').first().closest('.nn');
 
                     // use the inbox link as an anchor
                     for(var lang in locale){
                         var v = el.find('a[href$="#inbox"][title^="'+locale[lang].inbox+'"]');
                         if(v.length > 0){
                             this.inboxLink = v.first(); 
+                            this.lang = lang;
                             break;
                         } 
                     }
@@ -458,74 +471,74 @@
             return el;
         },
 
-        // Return true if a yellow archive highlight actually means the user is archiving
-        archiveableState: function() {
-            // For threads, this overrestricts:
-            //   TODO: should detect if user is archiving an inbox item from a non-inbox view
-            // For conversations, this underrestricts:
-            //   TODO: should detect if the current email is in the inbox, and only assign points if it is
-            return (this.inboxTabHighlighted() && this.currentView() == 'thread') || (this.currentView() != 'thread');
-        },
+// Return true if a yellow archive highlight actually means the user is archiving
+archiveableState: function() {
+    // For threads, this overrestricts:
+    //   TODO: should detect if user is archiving an inbox item from a non-inbox view
+    // For conversations, this underrestricts:
+    //   TODO: should detect if the current email is in the inbox, and only assign points if it is
+    return (this.inboxTabHighlighted() && this.currentView() == 'thread') || (this.currentView() != 'thread');
+},
 
-        mainListingEl: function() {
-            return this.elements.canvas.find('.Cp').first();
-        },
+mainListingEl: function() {
+    return this.elements.canvas.find('.Cp').first();
+},
 
-        mainListingEmpty: function() {
-            if(this.mainListingEl().length > 0 && this.currentView() == 'thread') {
-                return this.mainListingEl().find('table tr').length == 0;
-            } else {
-                return null;
-            }
-        },
+mainListingEmpty: function() {
+    if(this.mainListingEl().length > 0 && this.currentView() == 'thread') {
+        return this.mainListingEl().find('table tr').length == 0;
+    } else {
+        return null;
+    }
+},
 
-        toolbarEl: function() {
-            return this.elements.canvas.find('.D.E').first();
-        },
+toolbarEl: function() {
+    return this.elements.canvas.find('.D.E').first();
+},
 
-        toolbarCount: function() {
-            var el = this.toolbarEl().find('.dJ');
-            if(el[0]) {
-                var t = el[0].innerHTML;
+toolbarCount: function() {
+    var el = this.toolbarEl().find('.dJ');
+    if(el[0]) {
+        var t = el[0].innerHTML;
 
-                var m = /of <b>(\d+)<\/b>/.exec(t);
+        var m = /of <b>(\d+)<\/b>/.exec(t);
 
-                if(m && m[1]) {
-                    return parseInt(m[1]);
-                } else {
-                    return null;
+        if(m && m[1]) {
+            return parseInt(m[1]);
+        } else {
+            return null;
+        }
+    } else {
+        if(this.mainListingEmpty()) {
+            return 0;
+        } else {
+            return null;
+        }
+    }
+},
+
+detectXHREvents: function(params) {
+    var self = this;
+
+    try {
+        var m = /[?&]act=([^&]+)/.exec(params.url);
+        if(m && m[1]) {
+            var action = decodeURIComponent(m[1]);
+            var count = 1;
+
+            var urlParams = $.deparam(params.url);
+
+            if(params.body.length > 0) {
+                var postParams = $.deparam(params.body);
+                if(postParams['t'] instanceof Array)
+                    count = postParams['t'].length;
+
+                if(postParams['ba']) {
+                    // The user has cleared more than a pageful, just give'em 50 points
+                    count = 50;
                 }
-            } else {
-                if(this.mainListingEmpty()) {
-                    return 0;
-                } else {
-                    return null;
-                }
             }
-        },
-
-        detectXHREvents: function(params) {
-            var self = this;
-
-            try {
-                var m = /[?&]act=([^&]+)/.exec(params.url);
-                if(m && m[1]) {
-                    var action = decodeURIComponent(m[1]);
-                    var count = 1;
-
-                    var urlParams = $.deparam(params.url);
-
-                    if(params.body.length > 0) {
-                        var postParams = $.deparam(params.body);
-                        if(postParams['t'] instanceof Array)
-                            count = postParams['t'].length;
-
-                        if(postParams['ba']) {
-                            // The user has cleared more than a pageful, just give'em 50 points
-                            count = 50;
-                        }
-                    }
-                    switch(action) {
+            switch(action) {
                         case "rc_^i": // Archiving
                             // only count if from inbox or query
                             // TODO: could do better
@@ -553,27 +566,27 @@
                             }
                             break;
                         case "arl": //applying label
-                            var label = urlParams["acn"];
-                            var emails = postParams['t'] instanceof Array ? postParams['t'] : [ postParams['t'] ];
-                            this.executeObQueues('applyLabel', label, emails);
-                            break;
+                        var label = urlParams["acn"];
+                        var emails = postParams['t'] instanceof Array ? postParams['t'] : [ postParams['t'] ];
+                        this.executeObQueues('applyLabel', label, emails);
+                        break;
                         case "tr": // Deleting
-                            p("User deleted " + count + " emails.");
-                            this.executeObQueues('delete', count);
-                            break;
+                        p("User deleted " + count + " emails.");
+                        this.executeObQueues('delete', count);
+                        break;
                         case "sm": // Composing
-                            if(this.currentView() == 'conversation') {
-                                p("User replied to an email.");
-                                this.executeObQueues('reply', 1);
-                            } else {
-                                p("User composed an email.");
-                                this.executeObQueues('compose', 1);
-                            }
-                            break;
+                        if(this.currentView() == 'conversation') {
+                            p("User replied to an email.");
+                            this.executeObQueues('reply', 1);
+                        } else {
+                            p("User composed an email.");
+                            this.executeObQueues('compose', 1);
+                        }
+                        break;
                         case "sp": // Spam
-                            p("User spammed " + count + " emails.");
-                            this.executeObQueues('spam', count);
-                            break;
+                        p("User spammed " + count + " emails.");
+                        this.executeObQueues('spam', count);
+                        break;
                     }
                 }
             } catch(e) {
@@ -633,8 +646,8 @@
                     var args = Array.prototype.slice.call(arguments, 1);
                     (this.ob_queues[type][i]).apply(this, args)
                 }
-        }
-    };
+            }
+        };
 
-    window.Gmailr = Gmailr;
-})(jQuery, window);
+        window.Gmailr = Gmailr;
+    })(jQuery, window);

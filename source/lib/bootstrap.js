@@ -16,7 +16,7 @@ var addData = function(id, val) {
   div.setAttribute('style', 'display:none');
   body.appendChild(div);
 };
-    
+
 // Loads a script
 var loadScript = function(path) {
   var headID = document.getElementsByTagName('head')[0];
@@ -25,7 +25,7 @@ var loadScript = function(path) {
   newScript.src = path;
   headID.appendChild(newScript);
 };
-    
+
 // Pass data to inserted scripts via DOM elements
 addData('css_path',              chrome.extension.getURL('main.css'));
 addData('jquery_path',           chrome.extension.getURL('lib/jquery.min.js'));

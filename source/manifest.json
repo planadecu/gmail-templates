@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Gmail Template and Snippet manager",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Insert predefined mails: Create email templates and re-use them. Stop copy-pasting and boost your productivity with this app.",
   "short_name":"Manage your gmail templates easily. Bulk email sending.",
   "update_url": "https://clients2.google.com/service/update2/crx",
@@ -40,7 +40,7 @@
     "lib/ckeditor/*"
   ],
   "content_scripts": [{
-    "matches": [ "http://mail.google.com/*", "https://mail.google.com/*" ],
+    "matches": [ "http://mail.google.com/*", "https://mail.google.com/*", "http://inbox.google.com/*", "https://inbox.google.com/*" ],
     "js": ["lib/bootstrap.js"],
     "run_at": "document_end"
   }]

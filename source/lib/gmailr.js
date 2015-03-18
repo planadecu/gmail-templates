@@ -86,6 +86,10 @@
         "iw": {
             "inbox": "דואר נכנס ‏",
             "send": "שלח"
+        },
+        "hu": {
+            "inbox": "Beérkező levelek",
+            "send": "Küldés"
         }
 
     };

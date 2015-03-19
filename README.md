@@ -58,7 +58,7 @@ Supports GMail in several languages:
 
 ### Version
 
-Current version: 1.3.0
+Current version: 1.4.1
 
 ### License
 The software is free to use and integrate in other platforms. 

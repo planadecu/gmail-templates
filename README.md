@@ -54,6 +54,7 @@ Supports GMail in several languages:
 * Arab
 * Catalan
 * Hebrew
+* Hungarian
 
 ### Version
 

@@ -29,6 +29,7 @@ var boot = function(){
 		.wait()
 		.script(getData('jquery_bbq_path'))
 		.script(getData('jquery_jqote2'))
+		.script(getData('jquery_ui'))
 		.script(getData('ckeditor_jquery'))
 		.wait()
 		.script(getData('gmailr_path'))

@@ -11,5 +11,5 @@
       <%= this.get("content") %>
     </textarea>
   </div>
-  <div class="bottom"><div template-id="<%= this.id %>" class="button save" data-tooltip="Save template" aria-label="Save template">Save</div></div>
+  <div class="bottom update"><div template-id="<%= this.id %>" class="button save" data-tooltip="Save template" aria-label="Save template">Save</div></div>
 </div>

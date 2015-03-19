@@ -7,45 +7,54 @@
 	background-color: white;
 	font-weight: normal;
 	font-size: 80%;
+	width: 400px;
 }
 
 .template-editor{
 	z-index: 120;
 }
 
-.template-container ol{
-	margin: 0;
-	padding: 0;
+.template-container table{
 	border-left: 1px solid #ddd;
 	border-right: 1px solid #ddd;
-	margin-bottom: -1px;
+	border-collapse: collapse;
+	cursor: pointer;
+	width: 100%;
+	table-layout: fixed;
 }
 
-.template-container ol li{
+.template-container table tr{
 	border-bottom: 1px solid #ccc;
-	cursor: pointer;
-	list-style-type: none;
-	padding: 2px;
-	overflow: hidden;
+}
+
+.template-container table tr:hover{
+	background-color: #eee;
+}
+
+.template-container table tr td{
+	padding: 4px;
 }
 
 .template-item{
-	float:left;
-	padding-left: 7px;
-	padding-top: 4px;
-	margin-right: 7px;
-	white-space: nowrap;
-	max-width: 535px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.template-item-content{
 	text-overflow: ellipsis;
-	overflow: hidden;
 }
 
 .minibutton{
 	width: 16px;
 	height: 16px;
 	cursor: pointer;
-	float: right;
 	opacity: .6;
+	float: right;
+}
+
+.minibutton.cell{
+	float: none;
 }
 
 .minibutton.delete{
@@ -85,7 +94,7 @@
 .header{
 	height: 30px;
 	padding-left: 2px;
-	background-color: #222;
+	background-color: #404040;
 	color: white;
 }
 
@@ -121,6 +130,12 @@
 .template-container textarea{
 	min-width: 400px;
 	min-height: 130px;
+}
+
+.template-container .bottom.update{
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
 }
 
 .editor .header{

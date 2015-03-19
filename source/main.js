@@ -77,7 +77,8 @@ Gmailr.init(function(G) {
     var editTemplate = function(template, toAdd) {
       $('.template-editor').hide().remove();
       var popupedit = $($.jqote(jsTemplates.jqote_template_update, template)).hide().appendTo(document.body);
-      popupedit.find(".template-content-editor").ckeditor();
+      popupedit.find(".template-content-editor").ckeditor({height:"100%"});
+      var ckeditor = CKEDITOR.instances["template_" + template.id];
       $(".minibutton.close", popupedit).click(function() {
         popupedit.hide();
       });
@@ -106,8 +107,18 @@ Gmailr.init(function(G) {
         }
         Parse.Analytics.track('gtm_template_save', usage);
       });
-      popupedit.center().show(200);
+      popupedit.show(200,function(){
+        popupedit.center();
+        ckeditor.resize(popupedit.width(),popupedit.height()-100);
+      }).draggable().resizable({
+        minWidth: 400,
+        minHeight: 300,
+        stop: function(event, ui) {
+          ckeditor.resize(ui.size.width,ui.size.height-78);
+        }
+      }).center().resize(500,400);
 
+      
     }
     var insertTemplate = function(template, button) {
       // Find the subject box and insert the subject
@@ -175,7 +186,14 @@ Gmailr.init(function(G) {
       $(".minibutton.delete", popup).click(function() {
         deleteTemplate(templates.get($(this).parent().attr("template-id")));
       });
-      popup.center().show(200);
+      popup.show(200,function(){
+        popup.center();
+      }).draggable().resizable({
+        minWidth: 200,
+        resize: function(event, ui) {
+          ui.size.height = ui.originalSize.height;
+        }
+      }).center();
       Parse.Analytics.track('gtm_template_showlist', usage);
     };
 

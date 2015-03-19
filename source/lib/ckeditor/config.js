@@ -37,4 +37,6 @@ CKEDITOR.editorConfig = function( config ) {
 
 	// Remove magic line plugin
 	config.removePlugins = 'magicline';
+
+	config.resize_enabled = false;
 };

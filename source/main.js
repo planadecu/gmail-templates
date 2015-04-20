@@ -23,6 +23,7 @@ var loadTemplate = function(name, context) {
 var jsTemplates = {};
 loadTemplate('jqote_template_list', jsTemplates);
 loadTemplate('jqote_template_update', jsTemplates);
+loadTemplate('jqote_template_settings', jsTemplates);
 
 Gmailr.debug = false; // Turn verbose debugging messages on 
 
@@ -73,7 +74,87 @@ Gmailr.init(function(G) {
     $(".minibutton.close", popup).click(function() {
       popup.hide();
     });
+    $(".minibutton.settings", popup).click(function() {
+      settings();
+    });
 
+    var settings = function() {
+      $('.template-settings').hide().remove();
+      var popupsettings = $($.jqote(jsTemplates.jqote_template_settings)).hide().appendTo(document.body);
+      //popupsettings.find(".template-content-editor").ckeditor({height:"100%"});
+
+      $(".minibutton.close", popupsettings).click(function() {
+        popupsettings.hide();
+      });
+
+      $(".button.deleteall", popupsettings).click(function() {
+        if (confirm("Are you sure that you want to delete all the templates?")) {
+          Parse.Analytics.track('gtm_template_deleteall', usage);
+        }
+      });
+      $(".button.recoverall", popupsettings).click(function() {
+        if (confirm("This action is going to restore all the previously deleted templates. Are you sure you want to make that?")) {
+          Parse.Analytics.track('gtm_template_restoreall', usage);
+        }
+      });
+      $(".button.import", popupsettings).click(function() {
+        var templatesJson = prompt("Paste the import text extracted from the 'export' button.");
+        if(templatesJson != null) try{
+          var templatesJson = eval(templatesJson);
+          if(confirm("Are you sure that you want to import " + templatesJson.length + " templates?")){
+            for(i = 0; i < templatesJson.length; i++){
+              var template = new Template();
+              template.set("active", true);
+              template.set("email", email);
+              template.set("user", Parse.User.current());
+              template.set("lang", Gmailr.language());
+              template.setACL(new Parse.ACL(Parse.User.current()));
+              template.set("name", templatesJson[i].name);
+              template.set("subject", templatesJson[i].subject);
+              template.set("content", templatesJson[i].content);
+              template.set("createdAt", templatesJson[i].createdAt);
+              template.set("importedFrom", templatesJson[i].email);
+              try{
+                templates.add(template);
+                template.save();
+              }catch(er){
+                //don't save the template if duplicate
+              }
+            }
+            Parse.Analytics.track('gtm_template_import_success', usage);
+            templateButtonHandler(button);
+            popupsettings.hide();
+          }
+        }catch(e){
+          alert("Error importing templates. Input not valid. Make sure you completely copied the export input. Error message: " + e)
+        }
+        Parse.Analytics.track('gtm_template_import', usage);
+      });
+      $(".button.export", popupsettings).click(function() {
+          templates.fetch({
+            success: function(templates) {
+              if (templates.length == 0) {
+                alert("No templates to export");
+              }
+              else{
+                var templatesJson = JSON.stringify(templates.toJSON().map(function(m){
+                  return {
+                    content: m.content,
+                    name: m.name,
+                    subject: m.subject,
+                    createdAt: m.createdAt,
+                    email: m.email
+                  };
+                }));
+                prompt("Copy the following text and paste it in the account you want to import your templates. \n\nCopy tip 1: Triple click on the text, then CTRL + C. \nCopy tip 2: CTRL + A to select all the text, then CTRL + C",templatesJson);
+              }
+            }
+          });
+        Parse.Analytics.track('gtm_template_export', usage);
+      });
+
+      popupsettings.show(200).draggable().center();
+    }
     var editTemplate = function(template, toAdd) {
       $('.template-editor').hide().remove();
       var popupedit = $($.jqote(jsTemplates.jqote_template_update, template)).hide().appendTo(document.body);
@@ -172,6 +253,7 @@ Gmailr.init(function(G) {
         template.set("lang", Gmailr.language());
         template.setACL(new Parse.ACL(Parse.User.current()));
         template.set("name", "new template");
+        template.set("subject", "new subject");
         template.set("content", "Insert new content here");
 
         editTemplate(template, true);

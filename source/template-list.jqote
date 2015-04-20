@@ -1,5 +1,9 @@
 <div class="template-container template-list">
-	<div class="header"> <div class="title">Template list</div><div class="minibutton close" data-tooltip="Close" aria-label="Close" data-tooltip-delay="800"></div></div>
+	<div class="header">
+		<div class="title">Template list</div>
+		<div class="minibutton close" data-tooltip="Close" aria-label="Close" data-tooltip-delay="800"></div>
+		<div class="minibutton settings" data-tooltip="Settings" aria-label="Settings" data-tooltip-delay="800"></div>
+	</div>
 	<table cellpadding="0" cellspacing="0">
 		<tbody>
 			<% for(var i = 0; i<this.length; i++) { var template = this.at(i); %>

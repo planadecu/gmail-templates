@@ -87,6 +87,17 @@
 	right: 2px;
 }
 
+.minibutton.settings{
+	background-image: url(https://ssl.gstatic.com/mail/sprites/general-f471e1516770e9528f3dcf0a635516de.png);
+	background-color: transparent;
+	background-position: 0 -455px;
+	width: 24px;
+	height: 22px;
+	position: relative;
+	top: 4px;
+	right: 2px;
+}
+
 .minibutton.close:hover{
 	background-color: #555;
 }

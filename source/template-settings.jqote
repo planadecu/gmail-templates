@@ -1,0 +1,12 @@
+<div class="template-container template-settings">
+	<div class="header">
+		<div class="title">Settings</div>
+		<div class="minibutton close" data-tooltip="Close" aria-label="Close" data-tooltip-delay="800"></div>
+	</div>
+	<div class="bottom">
+		<div class="button import" data-tooltip="Import templates" aria-label="Import templates">Import templates</div>
+		<div class="button export" data-tooltip="Export templates" aria-label="Export templates">Export templates</div>
+		<!--div class="button deleteall" data-tooltip="Delete all templates" aria-label="Delete all templates">Delete all</div-->
+		<!--div class="button recoverall" data-tooltip="Recover all templates" aria-label="Recover all templates">Recover</div-->
+	</div>
+</div>

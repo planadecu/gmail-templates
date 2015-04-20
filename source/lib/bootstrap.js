@@ -39,6 +39,7 @@ addData('ckeditor_jquery',       chrome.extension.getURL('lib/ckeditor/adapters/
 addData('main_path',             chrome.extension.getURL('main.js'));
 addData('jqote_template_list',   chrome.extension.getURL('template-list.jqote'));
 addData('jqote_template_update', chrome.extension.getURL('template-update.jqote'));
+addData('jqote_template_settings', chrome.extension.getURL('template-settings.jqote'));
 addData('extension_version',     chrome.runtime.getManifest().version);
 
 

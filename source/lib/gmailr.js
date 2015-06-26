@@ -265,11 +265,13 @@ init: function(cb) {
                 split = this.elements.canvas.find(".cmsg .msg").html().trim().split(" ");
                 mail = null;
                 for (var i = 0; i < split.length && !mail; i++) {
-                    var spliz = split[i].replace("...", "").replace("…","");
+                    var spliz = split[i].replace("...", "").replace(/…/g,"");
                     if (this.__validateEmail(spliz)) {
                         mail = spliz;
                     }
                 }
+            }else{
+                mail.replace("...", "").replace(/…/g,"");
             }
         }
         return mail;

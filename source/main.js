@@ -292,7 +292,8 @@ Gmailr.init(function(G) {
             templateTd.attr("data-tooltip", "Template").removeAttr("jsaction").html("T").css({
               "margin-left": "10px",
               "background-color": "red",
-              "background-image": "-webkit-linear-gradient(top,orangered,red)"
+              "background-image": "-webkit-linear-gradient(top,orangered,red)",
+              "color": "white"
             }).click(templateButtonHandler);
           }
         });
@@ -302,12 +303,14 @@ Gmailr.init(function(G) {
           if (sendTd.parent().find("div[data-tooltip='Template']").length == 0) {
             var templateTd = sendTd.clone();
             templateTd.insertAfter(sendTd);
+            templateTd.children().children().first().remove();
             templateTd.children().children().last().attr("data-tooltip", "Template").html("T").css({
               "width": "20px",
               "background-color": "red",
               "background-image": "-webkit-linear-gradient(top,orangered,red)",
               "border": "1px solid red",
-              "min-width": "0"
+              "min-width": "0",
+              "color": "white"
             }).click(templateButtonHandler);
           }
         });

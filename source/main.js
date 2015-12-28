@@ -44,28 +44,45 @@ Gmailr.init(function(G) {
   var query = new Parse.Query(Template);
   query.equalTo("email", email).equalTo("active", true);
   templates.query = query;
-  templates.fetch({
-    success: function(templates) {
-      if (templates.length == 0) {
-        var user = Parse.User.current();
-        var template = new Template();
-        template.set("active", true);
-        template.set("email", email);
-        template.set("lang", G.language());
-        if (typeof user != "undefined" && typeof user != null) {
-          template.set("user", user);
-          template.setACL(new Parse.ACL(user));
-        }
-        template.set("name", "Welcome template");
-        template.set("subject", "Invoice reminder");
-        template.set("content", "Dear ${1:text:Insert name},<br/><br/>The total amount of your invoice is USD ${3:number:Total budget} that you can pay via wire transfer to the following bank account: ${2:text:Bank account number}<br/> <br/> The invoice will be done with name: ${1}<br/> <br/>Yours faithfully,<br/>${me}<br/>");
-        template.id = "temp";
-        templates.add(template);
-      }
-    }
-  });
+  var templatesLoaded = false;
 
-  var templateButtonHandler = function(button) {
+  var fetchTemplates = function(okCallback){ 
+    templates.fetch({
+      success: function(templates) {
+        if (templates.length == 0) {
+          var user = Parse.User.current();
+          var template = new Template();
+          template.set("active", true);
+          template.set("email", email);
+          template.set("lang", G.language());
+          if (typeof user != "undefined" && typeof user != null) {
+            template.set("user", user);
+            template.setACL(new Parse.ACL(user));
+          }
+          template.set("name", "Welcome template");
+          template.set("subject", "Invoice reminder");
+          template.set("content", "Dear ${1:text:Insert name},<br/><br/>The total amount of your invoice is USD ${3:number:Total budget} that you can pay via wire transfer to the following bank account: ${2:text:Bank account number}<br/> <br/> The invoice will be done with name: ${1}<br/> <br/>Yours faithfully,<br/>${me}<br/>");
+          template.id = "temp";
+          templates.add(template);
+        }
+        templatesLoaded = true;
+        if(!!okCallback) okCallback(templates);
+      }
+    });
+  };
+
+  fetchTemplates();
+
+  var templateButtonHandler = function(button,timeShow) {
+    if(!timeShow) timeShow = 200;
+    var templateNum = templates.length;
+    fetchTemplates(function(newTemplates){
+      if(templateNum != newTemplates.length) templateButtonHandler(button,0);
+    });
+    if(!templatesLoaded){
+      alert("Templates not yet loaded.");
+      return;
+    }
     if (!button || button.jQuery == null) {
       button = $(this);
     }
@@ -122,7 +139,7 @@ Gmailr.init(function(G) {
               }
             }
             Parse.Analytics.track('gtm_template_import_success', usage);
-            templateButtonHandler(button);
+            templateButtonHandler(button,0);
             popupsettings.hide();
           }
         }catch(e){
@@ -181,7 +198,7 @@ Gmailr.init(function(G) {
             if (toAdd) {
               templates.add(template);
             }
-            templateButtonHandler(button);
+            templateButtonHandler(button,0);
             popupedit.hide();
           });
 
@@ -240,7 +257,7 @@ Gmailr.init(function(G) {
           template.set("active", false);
           if (template.id != "temp") template.save();
           templates.remove(template);
-          templateButtonHandler(button);
+          templateButtonHandler(button,0);
           Parse.Analytics.track('gtm_template_delete', usage);
         }
         Parse.Analytics.track('gtm_template_show_delete', usage);
@@ -268,7 +285,7 @@ Gmailr.init(function(G) {
       $(".minibutton.delete", popup).click(function() {
         deleteTemplate(templates.get($(this).parent().attr("template-id")));
       });
-      popup.show(200,function(){
+      popup.show(timeShow,function(){
         popup.center();
       }).draggable().resizable({
         minWidth: 200,

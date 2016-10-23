@@ -367,8 +367,8 @@ var enrich = function(content, mail, reset=false) {
   for (i = 0; i < tokens.length; i++) {
     try {
       var split = tokens[i][1].split(":");
-      if (ss[split[0]] == null) ss[split[0]] = {};
-      s = ss[split[0]];
+      if (subs[split[0]] == null) subs[split[0]] = {};
+      s = subs[split[0]];
       if (s.val == null) {
         s.val = prompt(split[2]);
       }

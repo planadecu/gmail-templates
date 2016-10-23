@@ -353,6 +353,7 @@ jQuery.fn.center = function() {
 
 var enrich = function(content, mail, reset=false) {
   var r = /\${([^\$]*)}/g;
+  var tokens = [];
   var match = r.exec(content);
   while (match != null) {
     tokens.push(match);

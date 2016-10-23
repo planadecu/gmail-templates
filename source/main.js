@@ -220,7 +220,8 @@ Gmailr.init(function(G) {
     }
     var insertTemplate = function(template, button) {
       // Find the subject box and insert the subject
-      var subject = template.get("subject");
+      var pre_subject = template.get("subject");
+      var subject = enrich(pre_subject,email);
       if (subject) {
         var subjectBox;
         var subjectSelector = G.isGinbox()?'input[placeholder="Subject"]':'input[name="subjectbox"]';

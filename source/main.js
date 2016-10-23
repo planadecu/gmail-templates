@@ -29,7 +29,7 @@ Gmailr.debug = false; // Turn verbose debugging messages on
 
 Gmailr.init(function(G) {
   var email = G.emailAddress();
-  var tokens = []; // equivalent of static variable so it can last over multiple calls to enrich()
+  var subs = {}; // equivalent of static variable so it can last over multiple calls to enrich()
   window.usage.lang = G.language() || "undefined";
   window.usage.ginbox = (!!G.isGinbox())?"ginbox":"gmail";
 
@@ -352,19 +352,18 @@ jQuery.fn.center = function() {
 };
 
 var enrich = function(content, mail, reset=false) {
-  if (reset) // use when doing the subject line to start a new message
-    tokens = [];
   var r = /\${([^\$]*)}/g;
   var match = r.exec(content);
   while (match != null) {
     tokens.push(match);
     match = r.exec(content);
   }
-  var ss = {
-    "me": {
-      "val": mail
-    }
-  };
+  if (reset) // use when doing the subject line to start a new message
+    subs = {
+      "me": {
+        "val": mail
+      }
+    };
   for (i = 0; i < tokens.length; i++) {
     try {
       var split = tokens[i][1].split(":");

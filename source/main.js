@@ -29,6 +29,7 @@ Gmailr.debug = false; // Turn verbose debugging messages on
 
 Gmailr.init(function(G) {
   var email = G.emailAddress();
+  var subs = {}; // equivalent of static variable so it can last over multiple calls to enrich()
   window.usage.lang = G.language() || "undefined";
   window.usage.ginbox = (!!G.isGinbox())?"ginbox":"gmail";
 
@@ -220,7 +221,8 @@ Gmailr.init(function(G) {
     }
     var insertTemplate = function(template, button) {
       // Find the subject box and insert the subject
-      var subject = template.get("subject");
+      var pre_subject = template.get("subject");
+      var subject = enrich(pre_subject,email,true); // last parameter resets the tokens array
       if (subject) {
         var subjectBox;
         var subjectSelector = G.isGinbox()?'input[placeholder="Subject"]':'input[name="subjectbox"]';
@@ -349,7 +351,7 @@ jQuery.fn.center = function() {
   return this;
 };
 
-var enrich = function(content, mail) {
+var enrich = function(content, mail, reset=false) {
   var r = /\${([^\$]*)}/g;
   var tokens = [];
   var match = r.exec(content);
@@ -357,16 +359,17 @@ var enrich = function(content, mail) {
     tokens.push(match);
     match = r.exec(content);
   }
-  var ss = {
-    "me": {
-      "val": mail
-    }
-  };
+  if (reset) // use when doing the subject line to start a new message
+    subs = {
+      "me": {
+        "val": mail
+      }
+    };
   for (i = 0; i < tokens.length; i++) {
     try {
       var split = tokens[i][1].split(":");
-      if (ss[split[0]] == null) ss[split[0]] = {};
-      s = ss[split[0]];
+      if (subs[split[0]] == null) subs[split[0]] = {};
+      s = subs[split[0]];
       if (s.val == null) {
         s.val = prompt(split[2]);
       }

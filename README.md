@@ -8,7 +8,7 @@ GMail Template and Snippets Manager allows you to manage a list of predefined te
 A powerful templating engine is provided so you don't have to replace the fields inside the template manually. Pop-ups are going to ask you what data do you want to insert.
 ### Scripting engine
 
-The generated templates can include tags that are parsed and allowed to be filled when the template is inserted. This is useful when the template contains some variable parts that you don´t want to replace manually every time.
+The generated templates can include tags that are parsed and allowed to be filled when the template is inserted. This is useful when the template contains some variable parts that you donï¿½t want to replace manually every time.
 
 ##### Sample
 
@@ -60,14 +60,13 @@ Supports GMail in several languages:
 
 ### Version
 
-Current version: 1.5.1
+Current version: 1.6.0
 
 ### License
 The software is free to use and integrate in other platforms. 
 
 Licensed under: WYSYWYG but you can't copy it. License - Jordi Planadecursach
-
-http://www.rourevell.com 
+Contact: planadecu at gmail
 
 ### Donations
 Donate bitcoins to 1P6WR8KJeUmJZLPNXXyoKTEgMQvn3k8jd7 if you like.

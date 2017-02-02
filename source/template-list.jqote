@@ -6,7 +6,7 @@
 	</div>
 	<table cellpadding="0" cellspacing="0">
 		<tbody>
-			<% for(var i = 0; i<this.length; i++) { var template = this.at(i); %>
+			<%  for(var i = 0; i<this.length; i++) { var template = this[i];  %>
 			<tr template-id="<%=template.id %>"><td class="template-item" data-tooltip="Insert template" aria-label="Insert template" data-tooltip-delay="800"><%=template.get("name") %></td><td class="minibutton cell update" data-tooltip="Edit template" aria-label="Edit template" data-tooltip-delay="800"></td><td class="minibutton cell delete" data-tooltip="Delete template" aria-label="Delete template" data-tooltip-delay="800"></td></tr>
 			<% } %>
 		</tbody>

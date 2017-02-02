@@ -36,10 +36,10 @@ Gmailr.init(function (G) {
     login(email, email);
     var Template = Parse.Object.extend("Template");
 
-    var templates = {};
+    var templates = [];
 
     var query = new Parse.Query(Template);
-    query.equalTo("email", email).equalTo("active", true);
+    query.equalTo("email", email).equalTo("active", true).descending("name");
     var templatesLoaded = false;
 
     var fetchTemplates = function (okCallback) {
@@ -48,6 +48,7 @@ Gmailr.init(function (G) {
                 if (result.length == 0) {
                     var user = Parse.User.current();
                     var template = new Template();
+                    template.id = "temp";
                     template.set("active", true);
                     template.set("email", email);
                     template.set("lang", G.language());
@@ -58,10 +59,11 @@ Gmailr.init(function (G) {
                     template.set("name", "Welcome template");
                     template.set("subject", "Invoice reminder");
                     template.set("content", "Dear ${1:text:Insert name},<br/><br/>The total amount of your invoice is USD ${3:number:Total budget} that you can pay via wire transfer to the following bank account: ${2:text:Bank account number}<br/> <br/> The invoice will be done with name: ${1}<br/> <br/>Yours faithfully,<br/>${me}<br/>");
-                    template.id = "temp";
                     result.push(template);
-                    templates = result;
+
                 }
+                templates = result;
+                console.log("Templates loaded: " + templates.length);
                 templatesLoaded = true;
                 if (!!okCallback) okCallback(templates);
             },
@@ -72,7 +74,7 @@ Gmailr.init(function (G) {
     };
 
     fetchTemplates();
-dasda
+
     var templateButtonHandler = function (button, timeShow) {
         if (!timeShow) timeShow = 200;
         var templateNum = templates.length;
@@ -87,7 +89,8 @@ dasda
             button = $(this);
         }
         $('.template-list').hide().remove();
-        var popup = $($.jqote(jsTemplates.jqote_template_list, templates)).hide().appendTo(document.body);
+        var popup = $($.jqote(jsTemplates.jqote_template_list, [templates])).hide().appendTo(document.body);
+
         $(".minibutton.close", popup).click(function () {
             popup.hide();
         });
@@ -132,7 +135,7 @@ dasda
                             template.set("createdAt", templatesJson[i].createdAt);
                             template.set("importedFrom", templatesJson[i].email);
                             try {
-                                templates.add(template);
+                                templates.push(template);
                                 template.save();
                             } catch (er) {
                                 //don't save the template if duplicate
@@ -148,23 +151,26 @@ dasda
                 Parse.Analytics.track('gtm_template_import', usage);
             });
             $(".button.export", popupsettings).click(function () {
-                templates.fetch({
+                query.find({
                     success: function (templates) {
                         if (templates.length == 0) {
                             alert("No templates to export");
                         }
                         else {
-                            var templatesJson = JSON.stringify(templates.toJSON().map(function (m) {
+                            var templatesJson = JSON.stringify($.map(templates,function (template) {
                                 return {
-                                    content: m.content,
-                                    name: m.name,
-                                    subject: m.subject,
-                                    createdAt: m.createdAt,
-                                    email: m.email
+                                    content: template.get("content"),
+                                    name: template.get("name"),
+                                    subject: template.get("subject"),
+                                    createdAt: template.get("createdAt"),
+                                    email: template.get("email")
                                 };
                             }));
                             prompt("Copy the following text and paste it in the account you want to import your templates. \n\nCopy tip 1: Triple click on the text, then CTRL + C. \nCopy tip 2: CTRL + A to select all the text, then CTRL + C", templatesJson);
                         }
+                    },
+                    error: function (error) {
+                        console.log("Error exporting templates: " + error.code + " " + error.message);
                     }
                 });
                 Parse.Analytics.track('gtm_template_export', usage);
@@ -196,7 +202,7 @@ dasda
                     }
                     template.save().then(function () {
                         if (toAdd) {
-                            templates.add(template);
+                            templates.push(template);
                         }
                         templateButtonHandler(button, 0);
                         popupedit.hide();
@@ -256,10 +262,13 @@ dasda
             Parse.Analytics.track('gtm_template_insert', usage);
         }
         var deleteTemplate = function (template) {
-            if (confirm("Are you sure that you want to delete the template '" + template.get("name") + "'")) {
+            if (template != null && confirm("Are you sure that you want to delete the template '" + template.get("name") + "'")) {
                 template.set("active", false);
                 if (template.id != "temp") template.save();
-                templates.remove(template);
+                var index = templates.indexOf(template);
+                if (index > -1) {
+                    templates.splice(index, 1);
+                }
                 templateButtonHandler(button, 0);
                 Parse.Analytics.track('gtm_template_delete', usage);
             }
@@ -279,14 +288,21 @@ dasda
             editTemplate(template, true);
             Parse.Analytics.track('gtm_template_show_new', usage);
         });
+        findTemplate = function (el) {
+            var id = $(el).parent().attr("template-id");
+            for (var i = 0; i < templates.length; i++) {
+                if (templates[i].id == id) return templates[i];
+            }
+            return null;
+        };
         $(".template-item", popup).click(function () {
-            insertTemplate(templates.get($(this).parent().attr("template-id")), button);
+            insertTemplate(findTemplate(this), button);
         });
         $(".minibutton.update", popup).click(function () {
-            editTemplate(templates.get($(this).parent().attr("template-id")));
+            editTemplate(findTemplate(this));
         });
         $(".minibutton.delete", popup).click(function () {
-            deleteTemplate(templates.get($(this).parent().attr("template-id")));
+            deleteTemplate(findTemplate(this));
         });
         popup.show(timeShow, function () {
             popup.center();
@@ -319,12 +335,13 @@ dasda
         } else {
             btns.parent().parent().each(function () {
                 var sendTd = $(this);
+
                 if (sendTd.parent().find("div[data-tooltip='Template']").length == 0) {
                     var templateTd = sendTd.clone();
                     templateTd.insertAfter(sendTd);
                     templateTd.children().children().first().remove();
-                    templateTd.children().children().last().attr("data-tooltip", "Template").html("T").css({
-                        "width": "20px",
+                    templateTd.children().last().children().first().attr("data-tooltip", "Template").html("T").css({
+                        "width": "25px",
                         "background-color": "red",
                         "background-image": "-webkit-linear-gradient(top,orangered,red)",
                         "border": "1px solid red",

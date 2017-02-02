@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "Gmail Email Template and Snippet Manager",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "description": "Insert predefined mails: Create email templates and re-use them. Stop copy-pasting and boost your productivity with this app.",
   "short_name":"Manage your gmail email templates easily. Bulk email sending.",
   "update_url": "https://clients2.google.com/service/update2/crx",

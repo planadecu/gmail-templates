@@ -33,7 +33,7 @@ addData('jquery_bbq_path',       chrome.extension.getURL('lib/jquery.ba-bbq.js')
 addData('jquery_jqote2',         chrome.extension.getURL('lib/jquery.jqote2.min.js'));
 addData('jquery_ui',             chrome.extension.getURL('lib/jquery-ui.min.js'));
 addData('gmailr_path',           chrome.extension.getURL('lib/gmailr.js'));
-addData('parse_path',            chrome.extension.getURL('lib/parse-1.3.3.min.js'));
+addData('parse_path',            chrome.extension.getURL('lib/parse.min.js'));
 addData('ckeditor',              chrome.extension.getURL('lib/ckeditor/ckeditor.js'));
 addData('ckeditor_jquery',       chrome.extension.getURL('lib/ckeditor/adapters/jquery.js'));
 addData('main_path',             chrome.extension.getURL('main.js'));
